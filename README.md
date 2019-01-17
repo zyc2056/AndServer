@@ -1,67 +1,18 @@
 # AndServer
 
-![Logo](./images/logo.svg)
+基于AndServer 进行开发
 
-Web server and Web framework of Android platform. It provides annotations like SpringMVC, and if you are familiar with SpringMVC, you can master it very quickly.
+实现场景：通过网页可以查看安卓服务端的文件系统，可以下载文件系统中的文件，同时可以通过网页上传文件到安卓服务器的文件系统，可以指定位置
+比向电视推送文件或者安装包更高的应用
 
-* Static html website deployment
-* Dynamic http api deployment
 
-```java
-@RestController
-@RequestMapping(path = "/user")
-public class UserController {
+1.网页部分
+实现安卓文件系统的展现和文件，文件夹的选择，在网页中展现，方便用户上传和下载。
 
-    @PostMapping("/login")
-    public String login(@RequestParam("account") String account, 
-        @RequestParam("password") String password) {
-        if (...) {
-            return "Successful.";
-        }
-        return "Failed.";
-    }
+2.安卓部分
+实现文件系统的遍历，文件的读写，可以遍历任意目录和文件
 
-    @GetMapping(path = "/info/{userId}")
-    public User detail(@PathVariable("userId") String userId) {
-        User user = ...;
-        ...;
+3.网页和Android交互
+将安卓遍历的文件夹信息传递给网页端展示和下载，将用户上传的文件保存到安卓文件系统
 
-        return user;
-    }
-}
-```
 
-The above code will generate the following two http apis:
-```text
-POST http://.../user/login
-GET http://.../user/info/uid_001
-```
-
-For documentation and additional information see [the website](https://www.yanzhenjie.com/AndServer).
-
-## Download
-```groovy
-dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.2'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.1'
-}
-```
-
-AndServer requires at minimum Android 2.3(Api level 9).
-
-## License
-```text
-Copyright 2018 Yan Zhenjie
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
