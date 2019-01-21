@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.sample.controller;
+package com.yanzhenjie.andserver.sample.component;
 
-import com.yanzhenjie.andserver.annotation.Controller;
-import com.yanzhenjie.andserver.annotation.GetMapping;
 
-/**
- * Created by YanZhenjie on 2018/9/12.
- */
-@Controller
-public class PageController
+import com.yanzhenjie.andserver.annotation.Website;
+import com.yanzhenjie.andserver.framework.website.AssetsWebsite;
+
+@Website
+public class AssetWebsite extends AssetsWebsite
 {
-    @GetMapping(path = "/")
-    public String index()
+    public AssetWebsite()
     {
-        // Equivalent to [return "/index"].
-        return "forward:/index.html";
+        super("/Configure");
     }
-
-    /*@GetMapping(path = "/file")
-    public String file()
-    {
-        // Equivalent to [return "/index"].
-        return "forward:/index.html";
-    }*/
 }

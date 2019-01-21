@@ -41,9 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by YanZhenjie on 2018/6/9.
- */
 @RestController
 @RequestMapping(path = "/user")
 class TestController
@@ -85,48 +82,7 @@ class TestController
         return localFile.getAbsolutePath();
     }
 
-    @GetMapping(path = "/consume", consumes = {"application/json", "!application/xml"})
-    String consume()
-    {
-        return "Consume is successful";
-    }
-
-    @GetMapping(path = "/produce", produces = {"application/json; charset=utf-8"})
-    String produce()
-    {
-        return "Produce is successful";
-    }
-
-    @GetMapping(path = "/include", params = {"name=123"})
-    String include(@RequestParam(name = "name") String name)
-    {
-        return name;
-    }
-
-    @GetMapping(path = "/exclude", params = "name!=123")
-    String exclude()
-    {
-        return "Exclude is successful.";
-    }
-
-    @GetMapping(path = {"/mustKey", "/getName"}, params = "name")
-    String getMustKey(@RequestParam(name = "name") String name)
-    {
-        return name;
-    }
-
-    @PostMapping(path = {"/mustKey", "/postName"}, params = "name")
-    String postMustKey(@RequestParam(name = "name") String name)
-    {
-        return name;
-    }
-
-    @GetMapping(path = "/noName", params = "!name")
-    String noName()
-    {
-        return "NoName is successful.";
-    }
-
+    
     @PostMapping(path = "/formPart")
     String forPart(@FormPart(name = "user") UserInfo userInfo)
     {
