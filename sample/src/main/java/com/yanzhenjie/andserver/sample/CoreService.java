@@ -26,9 +26,6 @@ import com.yanzhenjie.andserver.sample.util.NetUtils;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Yan Zhenjie on 2018/6/9.
- */
 public class CoreService extends Service
 {
 
@@ -78,10 +75,7 @@ public class CoreService extends Service
         stopServer();
         super.onDestroy();
     }
-
-    /**
-     * Start server.
-     */
+    
     private void startServer()
     {
         if (mServer.isRunning())
@@ -95,9 +89,7 @@ public class CoreService extends Service
         }
     }
 
-    /**
-     * Stop server.
-     */
+    
     private void stopServer()
     {
         mServer.shutdown();

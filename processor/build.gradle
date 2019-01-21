@@ -6,11 +6,9 @@ compileJava {
 }
 
 dependencies {
-    implementation 'com.yanzhenjie.andserver:annotation:2.0.0'
-
+    implementation project(':annotation')
     implementation 'com.google.auto.service:auto-service:1.0-rc4'
     implementation 'com.squareup:javapoet:1.11.1'
-
     implementation 'org.apache.commons:commons-lang3:3.7'
     implementation 'org.apache.commons:commons-collections4:4.1'
 }
