@@ -23,57 +23,69 @@ import com.alibaba.fastjson.annotation.JSONField;
 /**
  * Created by YanZhenjie on 2018/6/9.
  */
-public class UserInfo implements Parcelable {
+public class UserInfo implements Parcelable
+{
 
     @JSONField(name = "userId")
     private String mUserId;
     @JSONField(name = "userName")
     private String mUserName;
 
-    public UserInfo() {
+    public UserInfo()
+    {
     }
 
-    protected UserInfo(Parcel in) {
+    protected UserInfo(Parcel in)
+    {
         mUserId = in.readString();
         mUserName = in.readString();
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags)
+    {
         dest.writeString(mUserId);
         dest.writeString(mUserName);
     }
 
     @Override
-    public int describeContents() {
+    public int describeContents()
+    {
         return 0;
     }
 
-    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>()
+    {
         @Override
-        public UserInfo createFromParcel(Parcel in) {
+        public UserInfo createFromParcel(Parcel in)
+        {
             return new UserInfo(in);
         }
 
         @Override
-        public UserInfo[] newArray(int size) {
+        public UserInfo[] newArray(int size)
+        {
             return new UserInfo[size];
         }
     };
 
-    public String getUserId() {
+    public String getUserId()
+    {
         return mUserId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(String userId)
+    {
         mUserId = userId;
     }
 
-    public String getUserName() {
+    public String getUserName()
+    {
         return mUserName;
     }
 
-    public void setUserName(String userName) {
+    public void setUserName(String userName)
+    {
         this.mUserName = userName;
     }
 }

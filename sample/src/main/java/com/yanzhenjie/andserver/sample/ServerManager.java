@@ -23,7 +23,8 @@ import android.content.IntentFilter;
 /**
  * Created by Yan Zhenjie on 2018/6/9.
  */
-public class ServerManager extends BroadcastReceiver {
+public class ServerManager extends BroadcastReceiver
+{
 
     private static final String ACTION = "com.yanzhenjie.andserver.receiver";
 
@@ -39,7 +40,8 @@ public class ServerManager extends BroadcastReceiver {
      *
      * @param context context.
      */
-    public static void onServerStart(Context context, String hostAddress) {
+    public static void onServerStart(Context context, String hostAddress)
+    {
         sendBroadcast(context, CMD_VALUE_START, hostAddress);
     }
 
@@ -48,7 +50,8 @@ public class ServerManager extends BroadcastReceiver {
      *
      * @param context context.
      */
-    public static void onServerError(Context context, String error) {
+    public static void onServerError(Context context, String error)
+    {
         sendBroadcast(context, CMD_VALUE_ERROR, error);
     }
 
@@ -57,15 +60,18 @@ public class ServerManager extends BroadcastReceiver {
      *
      * @param context context.
      */
-    public static void onServerStop(Context context) {
+    public static void onServerStop(Context context)
+    {
         sendBroadcast(context, CMD_VALUE_STOP);
     }
 
-    private static void sendBroadcast(Context context, int cmd) {
+    private static void sendBroadcast(Context context, int cmd)
+    {
         sendBroadcast(context, cmd, null);
     }
 
-    private static void sendBroadcast(Context context, int cmd, String message) {
+    private static void sendBroadcast(Context context, int cmd, String message)
+    {
         Intent broadcast = new Intent(ACTION);
         broadcast.putExtra(CMD_KEY, cmd);
         broadcast.putExtra(MESSAGE_KEY, message);
@@ -75,7 +81,8 @@ public class ServerManager extends BroadcastReceiver {
     private MainActivity mActivity;
     private Intent mService;
 
-    public ServerManager(MainActivity activity) {
+    public ServerManager(MainActivity activity)
+    {
         this.mActivity = activity;
         mService = new Intent(activity, CoreService.class);
     }
@@ -83,7 +90,8 @@ public class ServerManager extends BroadcastReceiver {
     /**
      * Register broadcast.
      */
-    public void register() {
+    public void register()
+    {
         IntentFilter filter = new IntentFilter(ACTION);
         mActivity.registerReceiver(this, filter);
     }
@@ -91,35 +99,44 @@ public class ServerManager extends BroadcastReceiver {
     /**
      * UnRegister broadcast.
      */
-    public void unRegister() {
+    public void unRegister()
+    {
         mActivity.unregisterReceiver(this);
     }
 
-    public void startServer() {
+    public void startServer()
+    {
         mActivity.startService(mService);
     }
 
-    public void stopServer() {
+    public void stopServer()
+    {
         mActivity.stopService(mService);
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context context, Intent intent)
+    {
         String action = intent.getAction();
-        if (ACTION.equals(action)) {
+        if (ACTION.equals(action))
+        {
             int cmd = intent.getIntExtra(CMD_KEY, 0);
-            switch (cmd) {
-                case CMD_VALUE_START: {
+            switch (cmd)
+            {
+                case CMD_VALUE_START:
+                {
                     String ip = intent.getStringExtra(MESSAGE_KEY);
                     mActivity.onServerStart(ip);
                     break;
                 }
-                case CMD_VALUE_ERROR: {
+                case CMD_VALUE_ERROR:
+                {
                     String error = intent.getStringExtra(MESSAGE_KEY);
                     mActivity.onServerError(error);
                     break;
                 }
-                case CMD_VALUE_STOP: {
+                case CMD_VALUE_STOP:
+                {
                     mActivity.onServerStop();
                     break;
                 }

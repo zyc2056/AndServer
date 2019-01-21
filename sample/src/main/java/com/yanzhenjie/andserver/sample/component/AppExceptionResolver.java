@@ -30,15 +30,20 @@ import com.yanzhenjie.andserver.util.StatusCode;
  * Created by YanZhenjie on 2018/9/11.
  */
 @Resolver
-public class AppExceptionResolver implements ExceptionResolver {
+public class AppExceptionResolver implements ExceptionResolver
+{
 
     @Override
-    public void onResolve(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull Throwable e) {
+    public void onResolve(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull Throwable e)
+    {
         e.printStackTrace();
-        if (e instanceof BasicException) {
-            BasicException exception = (BasicException)e;
+        if (e instanceof BasicException)
+        {
+            BasicException exception = (BasicException) e;
             response.setStatus(exception.getStatusCode());
-        } else {
+        }
+        else
+        {
             response.setStatus(StatusCode.SC_INTERNAL_SERVER_ERROR);
         }
         String body = JsonUtils.failedJson(response.getStatus(), e.getMessage());

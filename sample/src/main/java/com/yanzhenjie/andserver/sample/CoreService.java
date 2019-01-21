@@ -29,44 +29,52 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Yan Zhenjie on 2018/6/9.
  */
-public class CoreService extends Service {
+public class CoreService extends Service
+{
 
     private Server mServer;
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         mServer = AndServer.serverBuilder()
-            .inetAddress(NetUtils.getLocalIPAddress())
-            .port(8080)
-            .timeout(10, TimeUnit.SECONDS)
-            .listener(new Server.ServerListener() {
-                @Override
-                public void onStarted() {
-                    String hostAddress = mServer.getInetAddress().getHostAddress();
-                    ServerManager.onServerStart(CoreService.this, hostAddress);
-                }
+                .inetAddress(NetUtils.getLocalIPAddress())
+                .port(8080)
+                .timeout(10, TimeUnit.SECONDS)
+                .listener(new Server.ServerListener()
+                {
+                    @Override
+                    public void onStarted()
+                    {
+                        String hostAddress = mServer.getInetAddress().getHostAddress();
+                        ServerManager.onServerStart(CoreService.this, hostAddress);
+                    }
 
-                @Override
-                public void onStopped() {
-                    ServerManager.onServerStop(CoreService.this);
-                }
+                    @Override
+                    public void onStopped()
+                    {
+                        ServerManager.onServerStop(CoreService.this);
+                    }
 
-                @Override
-                public void onException(Exception e) {
-                    ServerManager.onServerError(CoreService.this, e.getMessage());
-                }
-            })
-            .build();
+                    @Override
+                    public void onException(Exception e)
+                    {
+                        ServerManager.onServerError(CoreService.this, e.getMessage());
+                    }
+                })
+                .build();
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
         startServer();
         return START_STICKY;
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         stopServer();
         super.onDestroy();
     }
@@ -74,11 +82,15 @@ public class CoreService extends Service {
     /**
      * Start server.
      */
-    private void startServer() {
-        if (mServer.isRunning()) {
+    private void startServer()
+    {
+        if (mServer.isRunning())
+        {
             String hostAddress = mServer.getInetAddress().getHostAddress();
             ServerManager.onServerStart(CoreService.this, hostAddress);
-        } else {
+        }
+        else
+        {
             mServer.startup();
         }
     }
@@ -86,13 +98,15 @@ public class CoreService extends Service {
     /**
      * Stop server.
      */
-    private void stopServer() {
+    private void stopServer()
+    {
         mServer.shutdown();
     }
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         return null;
     }
 }

@@ -46,16 +46,18 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/user")
-class TestController {
+class TestController
+{
 
     @GetMapping(path = "/get/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    String info(@PathVariable(name = "userId") String userId) {
+    String info(@PathVariable(name = "userId") String userId)
+    {
         return userId;
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    String login(HttpRequest request, HttpResponse response, @RequestParam(name = "account") String account,
-        @RequestParam(name = "password") String password) {
+    String login(HttpRequest request, HttpResponse response, @RequestParam(name = "account") String account, @RequestParam(name = "password") String password)
+    {
         Session session = request.getValidSession();
         session.setAttribute(LoginInterceptor.LOGIN_ATTRIBUTE, true);
 
@@ -66,7 +68,8 @@ class TestController {
 
     @Addition(stringType = "login", booleanType = true)
     @GetMapping(path = "/userInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    UserInfo userInfo(@CookieValue("account") String account) {
+    UserInfo userInfo(@CookieValue("account") String account)
+    {
         Logger.i("Account: " + account);
         UserInfo userInfo = new UserInfo();
         userInfo.setUserId("123");
@@ -75,59 +78,70 @@ class TestController {
     }
 
     @PostMapping(path = "/upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    String upload(@RequestParam(name = "header") MultipartFile file) throws IOException {
+    String upload(@RequestParam(name = "header") MultipartFile file) throws IOException
+    {
         File localFile = FileUtils.createRandomFile(file);
         file.transferTo(localFile);
         return localFile.getAbsolutePath();
     }
 
     @GetMapping(path = "/consume", consumes = {"application/json", "!application/xml"})
-    String consume() {
+    String consume()
+    {
         return "Consume is successful";
     }
 
     @GetMapping(path = "/produce", produces = {"application/json; charset=utf-8"})
-    String produce() {
+    String produce()
+    {
         return "Produce is successful";
     }
 
     @GetMapping(path = "/include", params = {"name=123"})
-    String include(@RequestParam(name = "name") String name) {
+    String include(@RequestParam(name = "name") String name)
+    {
         return name;
     }
 
     @GetMapping(path = "/exclude", params = "name!=123")
-    String exclude() {
+    String exclude()
+    {
         return "Exclude is successful.";
     }
 
     @GetMapping(path = {"/mustKey", "/getName"}, params = "name")
-    String getMustKey(@RequestParam(name = "name") String name) {
+    String getMustKey(@RequestParam(name = "name") String name)
+    {
         return name;
     }
 
     @PostMapping(path = {"/mustKey", "/postName"}, params = "name")
-    String postMustKey(@RequestParam(name = "name") String name) {
+    String postMustKey(@RequestParam(name = "name") String name)
+    {
         return name;
     }
 
     @GetMapping(path = "/noName", params = "!name")
-    String noName() {
+    String noName()
+    {
         return "NoName is successful.";
     }
 
     @PostMapping(path = "/formPart")
-    String forPart(@FormPart(name = "user") UserInfo userInfo) {
+    String forPart(@FormPart(name = "user") UserInfo userInfo)
+    {
         return JSON.toJSONString(userInfo);
     }
 
     @PostMapping(path = "/jsonBody")
-    String jsonBody(@RequestBody UserInfo userInfo) {
+    String jsonBody(@RequestBody UserInfo userInfo)
+    {
         return JSON.toJSONString(userInfo);
     }
 
     @PostMapping(path = "/listBody")
-    String jsonBody(@RequestBody List<UserInfo> infoList) {
+    String jsonBody(@RequestBody List<UserInfo> infoList)
+    {
         return JSON.toJSONString(infoList);
     }
 }

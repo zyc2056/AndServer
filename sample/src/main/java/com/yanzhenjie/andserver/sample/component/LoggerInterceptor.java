@@ -31,11 +31,12 @@ import com.yanzhenjie.andserver.util.MultiValueMap;
  * Created by YanZhenjie on 2018/9/11.
  */
 @Interceptor
-public class LoggerInterceptor implements HandlerInterceptor {
+public class LoggerInterceptor implements HandlerInterceptor
+{
 
     @Override
-    public boolean onIntercept(@NonNull HttpRequest request, @NonNull HttpResponse response,
-        @NonNull RequestHandler handler) {
+    public boolean onIntercept(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull RequestHandler handler)
+    {
         String path = request.getPath();
         HttpMethod method = request.getMethod();
         MultiValueMap<String, String> valueMap = request.getParameter();

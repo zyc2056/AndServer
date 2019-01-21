@@ -23,16 +23,17 @@ import java.lang.reflect.Type;
 /**
  * Created by YanZhenjie on 2018/6/9.
  */
-public class JsonUtils {
+public class JsonUtils
+{
 
     /**
      * Business is successful.
      *
      * @param data return data.
-     *
      * @return json.
      */
-    public static String successfulJson(Object data) {
+    public static String successfulJson(Object data)
+    {
         ReturnData returnData = new ReturnData();
         returnData.setSuccess(true);
         returnData.setErrorCode(200);
@@ -43,12 +44,12 @@ public class JsonUtils {
     /**
      * Business is failed.
      *
-     * @param code error code.
+     * @param code    error code.
      * @param message message.
-     *
      * @return json.
      */
-    public static String failedJson(int code, String message) {
+    public static String failedJson(int code, String message)
+    {
         ReturnData returnData = new ReturnData();
         returnData.setSuccess(false);
         returnData.setErrorCode(code);
@@ -60,10 +61,10 @@ public class JsonUtils {
      * Converter object to json string.
      *
      * @param data the object.
-     *
      * @return json string.
      */
-    public static String toJsonString(Object data) {
+    public static String toJsonString(Object data)
+    {
         return JSON.toJSONString(data);
     }
 
@@ -72,11 +73,11 @@ public class JsonUtils {
      *
      * @param json json string.
      * @param type the type of object.
-     * @param <T> type.
-     *
+     * @param <T>  type.
      * @return object.
      */
-    public static <T> T parseJson(String json, Type type) {
+    public static <T> T parseJson(String json, Type type)
+    {
         return JSON.parseObject(json, type);
     }
 }

@@ -22,9 +22,10 @@ import com.yanzhenjie.andserver.framework.website.AssetsWebsite;
  * Created by YanZhenjie on 2018/9/17.
  */
 @Website
-public class InternalWebsite extends AssetsWebsite {
-
-    public InternalWebsite() {
+public class InternalWebsite extends AssetsWebsite
+{
+    public InternalWebsite()
+    {
         super("/web");
     }
 }

@@ -28,38 +28,50 @@ import java.io.File;
 /**
  * Created by YanZhenjie on 2018/6/9.
  */
-public class App extends Application {
+public class App extends Application
+{
 
     private static App mInstance;
 
     private File mRootDir;
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
 
-        if (mInstance == null) {
+        if (mInstance == null)
+        {
             mInstance = this;
             initRootPath(this);
         }
     }
 
     @NonNull
-    public static App getInstance() {
+    public static App getInstance()
+    {
         return mInstance;
     }
 
     @NonNull
-    public File getRootDir() {
+    public File getRootDir()
+    {
         return mRootDir;
     }
 
-    private void initRootPath(Context context) {
-        if (mRootDir != null) return;
+    private void initRootPath(Context context)
+    {
+        if (mRootDir != null)
+        {
+            return;
+        }
 
-        if (FileUtils.storageAvailable()) {
+        if (FileUtils.storageAvailable())
+        {
             mRootDir = Environment.getExternalStorageDirectory();
-        } else {
+        }
+        else
+        {
             mRootDir = context.getFilesDir();
         }
         mRootDir = new File(mRootDir, "AndServer");

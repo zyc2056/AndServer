@@ -35,18 +35,22 @@ import java.nio.charset.Charset;
  * Created by YanZhenjie on 2018/9/11.
  */
 @Converter
-public class AppMessageConverter implements MessageConverter {
+public class AppMessageConverter implements MessageConverter
+{
 
     @Override
-    public ResponseBody convert(@NonNull Object output, @Nullable MediaType mediaType) {
+    public ResponseBody convert(@NonNull Object output, @Nullable MediaType mediaType)
+    {
         return new JsonBody(JsonUtils.successfulJson(output));
     }
 
     @Nullable
     @Override
-    public <T> T convert(@NonNull InputStream stream, @Nullable MediaType mediaType, Type type) throws IOException {
+    public <T> T convert(@NonNull InputStream stream, @Nullable MediaType mediaType, Type type) throws IOException
+    {
         Charset charset = mediaType == null ? null : mediaType.getCharset();
-        if (charset == null) {
+        if (charset == null)
+        {
             return JsonUtils.parseJson(IOUtils.toString(stream), type);
         }
         return JsonUtils.parseJson(IOUtils.toString(stream, charset), type);

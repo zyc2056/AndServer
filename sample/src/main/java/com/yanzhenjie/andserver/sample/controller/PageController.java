@@ -22,10 +22,12 @@ import com.yanzhenjie.andserver.annotation.GetMapping;
  * Created by YanZhenjie on 2018/9/12.
  */
 @Controller
-public class PageController {
+public class PageController
+{
 
     @GetMapping(path = "/")
-    public String index() {
+    public String index()
+    {
         // Equivalent to [return "/index"].
         return "forward:/index.html";
     }
