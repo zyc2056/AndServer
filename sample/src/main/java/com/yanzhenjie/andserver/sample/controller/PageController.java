@@ -16,7 +16,6 @@
 package com.yanzhenjie.andserver.sample.controller;
 
 import com.yanzhenjie.andserver.annotation.Controller;
-import com.yanzhenjie.andserver.annotation.GetMapping;
 
 /**
  * Created by YanZhenjie on 2018/9/12.
@@ -24,12 +23,12 @@ import com.yanzhenjie.andserver.annotation.GetMapping;
 @Controller
 public class PageController
 {
-    @GetMapping(path = "/")
+   /* @GetMapping(path = "/")
     public String index()
     {
         // Equivalent to [return "/index"].
         return "forward:/index.html";
-    }
+    }*/
 
     /*@GetMapping(path = "/file")
     public String file()

@@ -16,14 +16,14 @@
 package com.yanzhenjie.andserver.sample.component;
 
 import com.yanzhenjie.andserver.annotation.Website;
-import com.yanzhenjie.andserver.framework.website.AssetsWebsite;
+import com.yanzhenjie.andserver.framework.website.FileBrowser;
 import com.yanzhenjie.andserver.sample.util.PathManager;
 
 @Website
-public class FileWebsite extends AssetsWebsite
+public class FileWebsite extends FileBrowser
 {
     public FileWebsite()
     {
-        super(PathManager.getInstance().getRootDir());
+        super(PathManager.getInstance().getWebDir());
     }
 }
