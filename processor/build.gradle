@@ -1,4 +1,4 @@
-apply plugin: rootProject.ext.plugins.javaLibrary
+apply plugin: 'java-library'
 
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -6,11 +6,11 @@ compileJava {
 }
 
 dependencies {
-    implementation rootProject.ext.dependencies.andserverAnnotation
+    implementation 'com.yanzhenjie.andserver:annotation:2.0.0'
 
-    implementation rootProject.ext.dependencies.autoService
-    implementation rootProject.ext.dependencies.javaPoet
+    implementation 'com.google.auto.service:auto-service:1.0-rc4'
+    implementation 'com.squareup:javapoet:1.11.1'
 
-    implementation rootProject.ext.dependencies.commonsLang
-    implementation rootProject.ext.dependencies.commonsCollections
+    implementation 'org.apache.commons:commons-lang3:3.7'
+    implementation 'org.apache.commons:commons-collections4:4.1'
 }

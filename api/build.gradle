@@ -1,20 +1,20 @@
-apply plugin: rootProject.ext.plugins.androidLibrary
+apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion rootProject.ext.android.libraryMinSdkVersion
-        targetSdkVersion rootProject.ext.android.libraryTargetSdkVersion
+        minSdkVersion 9
+        targetSdkVersion 27
         consumerProguardFiles 'proguard-rules.txt'
     }
 }
 
 dependencies {
-    api rootProject.ext.dependencies.andserverAnnotation
+    api 'com.yanzhenjie.andserver:annotation:2.0.0'
 
-    implementation rootProject.ext.dependencies.httpcore
-    implementation rootProject.ext.dependencies.fileupload
-    compileOnly rootProject.ext.dependencies.annotation
+    implementation "com.yanzhenjie.apache:httpcore:4.4.10"
+    implementation "com.yanzhenjie.apache:fileupload:1.3.3"
+    compileOnly 'com.android.support:support-annotations:27.1.1'
 }
