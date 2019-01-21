@@ -27,13 +27,15 @@ import java.io.IOException;
 /**
  * Created by YanZhenjie on 2018/9/6.
  */
-public abstract class BasicWebsite extends Website {
+public abstract class BasicWebsite extends Website
+{
 
     public static final String DEFAULT_INDEX = "index.html";
 
     private final String mIndexFileName;
 
-    public BasicWebsite() {
+    public BasicWebsite()
+    {
         this(DEFAULT_INDEX);
     }
 
@@ -42,18 +44,21 @@ public abstract class BasicWebsite extends Website {
      *
      * @param indexFileName the default file name for each directory, e.g. index.html.
      */
-    public BasicWebsite(@NonNull String indexFileName) {
+    public BasicWebsite(@NonNull String indexFileName)
+    {
         Assert.isTrue(!StringUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
         this.mIndexFileName = indexFileName;
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws IOException
+    {
         return null;
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws IOException
+    {
         return -1;
     }
 
@@ -63,7 +68,8 @@ public abstract class BasicWebsite extends Website {
      * @return file name, does not include the path.
      */
     @NonNull
-    protected final String getIndexFileName() {
+    protected final String getIndexFileName()
+    {
         return mIndexFileName;
     }
 
@@ -71,11 +77,14 @@ public abstract class BasicWebsite extends Website {
      * Add the '/' to the beginning.
      *
      * @param target target string.
-     *
      * @return rule result.
      */
-    protected String addStartSlash(@NonNull String target) {
-        if (!target.startsWith(File.separator)) target = File.separator + target;
+    protected String addStartSlash(@NonNull String target)
+    {
+        if (!target.startsWith(File.separator))
+        {
+            target = File.separator + target;
+        }
         return target;
     }
 
@@ -83,11 +92,14 @@ public abstract class BasicWebsite extends Website {
      * Add '/' at the ending.
      *
      * @param target target string.
-     *
      * @return rule result.
      */
-    protected String addEndSlash(@NonNull String target) {
-        if (!target.endsWith(File.separator)) target = target + File.separator;
+    protected String addEndSlash(@NonNull String target)
+    {
+        if (!target.endsWith(File.separator))
+        {
+            target = target + File.separator;
+        }
         return target;
     }
 
@@ -95,11 +107,14 @@ public abstract class BasicWebsite extends Website {
      * Remove '/' at the beginning.
      *
      * @param target target string.
-     *
      * @return rule result.
      */
-    protected String trimStartSlash(@NonNull String target) {
-        while (target.startsWith(File.separator)) target = target.substring(1);
+    protected String trimStartSlash(@NonNull String target)
+    {
+        while (target.startsWith(File.separator))
+        {
+            target = target.substring(1);
+        }
         return target;
     }
 
@@ -107,11 +122,14 @@ public abstract class BasicWebsite extends Website {
      * Remove '/' at the ending.
      *
      * @param target target string.
-     *
      * @return rule result.
      */
-    protected String trimEndSlash(@NonNull String target) {
-        while (target.endsWith(File.separator)) target = target.substring(0, target.length() - 1);
+    protected String trimEndSlash(@NonNull String target)
+    {
+        while (target.endsWith(File.separator))
+        {
+            target = target.substring(0, target.length() - 1);
+        }
         return target;
     }
 
@@ -119,10 +137,10 @@ public abstract class BasicWebsite extends Website {
      * Remove the '/' at the beginning and ending.
      *
      * @param target target string.
-     *
      * @return rule result.
      */
-    protected String trimSlash(@NonNull String target) {
+    protected String trimSlash(@NonNull String target)
+    {
         target = trimStartSlash(target);
         target = trimEndSlash(target);
         return target;

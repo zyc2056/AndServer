@@ -45,7 +45,8 @@ import java.util.Map;
 /**
  * Created by YanZhenjie on 2018/9/7.
  */
-public class AssetsWebsite extends BasicWebsite implements Patterns {
+public class AssetsWebsite extends BasicWebsite implements Patterns
+{
 
     private final AssetsReader mReader;
     private final String mRootPath;
@@ -59,22 +60,25 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
      *
      * @param rootPath website root directory.
      */
-    public AssetsWebsite(@NonNull String rootPath) {
+    public AssetsWebsite(@NonNull String rootPath)
+    {
         this(rootPath, DEFAULT_INDEX);
     }
 
     /**
      * Create a website object.
      *
-     * @param rootPath website root directory.
+     * @param rootPath      website root directory.
      * @param indexFileName the default file name for each directory, e.g. index.html.
      */
-    public AssetsWebsite(@NonNull String rootPath, @NonNull String indexFileName) {
+    public AssetsWebsite(@NonNull String rootPath, @NonNull String indexFileName)
+    {
         super(indexFileName);
         Assert.isTrue(!StringUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
         Assert.isTrue(!StringUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
 
-        if (!rootPath.matches(PATH)) {
+        if (!rootPath.matches(PATH))
+        {
             throw new IllegalArgumentException("The format of [%s] is wrong, it should be like [/root/project].");
         }
 
@@ -84,15 +88,19 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
         this.mPatternMap = new HashMap<>();
 
         PackageManager packageManager = context.getPackageManager();
-        try {
+        try
+        {
             mPackageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
-        } catch (Exception ignored) {
+        }
+        catch (Exception ignored)
+        {
             throw new RuntimeException(ignored);
         }
     }
 
     @Override
-    public boolean intercept(@NonNull HttpRequest request) {
+    public boolean intercept(@NonNull HttpRequest request)
+    {
         tryScanFile();
 
         String httpPath = request.getPath();
@@ -102,18 +110,24 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
     /**
      * Try to scan the file, no longer scan if it has already been scanned.
      */
-    private void tryScanFile() {
-        if (!isScanned) {
-            synchronized (AssetsWebsite.class) {
-                if (!isScanned) {
+    private void tryScanFile()
+    {
+        if (!isScanned)
+        {
+            synchronized (AssetsWebsite.class)
+            {
+                if (!isScanned)
+                {
                     List<String> fileList = mReader.scanFile(mRootPath);
-                    for (String filePath : fileList) {
+                    for (String filePath : fileList)
+                    {
                         String httpPath = filePath.substring(mRootPath.length(), filePath.length());
                         httpPath = addStartSlash(httpPath);
                         mPatternMap.put(httpPath, filePath);
 
                         String indexFileName = getIndexFileName();
-                        if (filePath.endsWith(indexFileName)) {
+                        if (filePath.endsWith(indexFileName))
+                        {
                             httpPath = filePath.substring(0, filePath.indexOf(indexFileName) - 1);
                             httpPath = addStartSlash(httpPath);
                             mPatternMap.put(httpPath, filePath);
@@ -127,36 +141,42 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws IOException
+    {
         String httpPath = request.getPath();
         String filePath = mPatternMap.get(httpPath);
         final InputStream stream = mReader.getInputStream(filePath);
-        if (stream != null) {
+        if (stream != null)
+        {
             return DigestUtils.md5DigestAsHex(stream);
         }
         throw new NotFoundException(httpPath);
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws IOException
+    {
         String filePath = mPatternMap.get(request.getPath());
         return mReader.isFile(filePath) ? mPackageInfo.lastUpdateTime : -1;
     }
 
     @NonNull
     @Override
-    public ResponseBody getBody(@NonNull HttpRequest request) throws IOException {
+    public ResponseBody getBody(@NonNull HttpRequest request) throws IOException
+    {
         String httpPath = request.getPath();
         String filePath = mPatternMap.get(httpPath);
         final InputStream stream = mReader.getInputStream(filePath);
-        if (stream == null) {
+        if (stream == null)
+        {
             throw new NotFoundException(httpPath);
         }
         final MediaType mediaType = MediaType.getFileMediaType(filePath);
         return new StreamBody(stream, stream.available(), mediaType);
     }
 
-    public static class AssetsReader {
+    public static class AssetsReader
+    {
 
         /**
          * {@link AssetManager}.
@@ -168,7 +188,8 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
          *
          * @param manager {@link AssetManager}.
          */
-        public AssetsReader(@NonNull AssetManager manager) {
+        public AssetsReader(@NonNull AssetManager manager)
+        {
             this.mAssetManager = manager;
         }
 
@@ -176,14 +197,17 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
          * Get stream file.
          *
          * @param filePath assets in the absolute path.
-         *
          * @return {@link InputStream} or null.
          */
         @Nullable
-        public InputStream getInputStream(@NonNull String filePath) {
-            try {
+        public InputStream getInputStream(@NonNull String filePath)
+        {
+            try
+            {
                 return mAssetManager.open(filePath);
-            } catch (Throwable ignored) {
+            }
+            catch (Throwable ignored)
+            {
                 return null;
             }
         }
@@ -192,10 +216,10 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
          * Specify whether the destination is a file.
          *
          * @param fileName assets in the absolute path.
-         *
          * @return true, other wise is false.
          */
-        public boolean isFile(@NonNull String fileName) {
+        public boolean isFile(@NonNull String fileName)
+        {
             return getInputStream(fileName) != null;
         }
 
@@ -203,16 +227,19 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
          * Scanning subFolders and files under the specified path.
          *
          * @param path the specified path.
-         *
          * @return String[] Array of strings, one for each asset. May be null.
          */
         @NonNull
-        public List<String> list(@NonNull String path) {
+        public List<String> list(@NonNull String path)
+        {
             List<String> fileList = new ArrayList<>();
-            try {
+            try
+            {
                 String[] files = mAssetManager.list(path);
                 Collections.addAll(fileList, files);
-            } catch (Throwable ignored) {
+            }
+            catch (Throwable ignored)
+            {
             }
             return fileList;
         }
@@ -221,25 +248,35 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
          * Scan all files in the inPath.
          *
          * @param path path in the path.
-         *
          * @return under inPath absolute path.
          */
         @NonNull
-        public List<String> scanFile(@NonNull String path) {
+        public List<String> scanFile(@NonNull String path)
+        {
             Assert.isTrue(!StringUtils.isEmpty(path), "The path cannot be empty.");
 
             List<String> pathList = new ArrayList<>();
-            if (isFile(path)) {
+            if (isFile(path))
+            {
                 pathList.add(path);
-            } else {
+            }
+            else
+            {
                 List<String> files = list(path);
-                for (String file : files) {
+                for (String file : files)
+                {
                     String realPath = path + File.separator + file;
-                    if (isFile(realPath)) {
+                    if (isFile(realPath))
+                    {
                         pathList.add(realPath);
-                    } else {
+                    }
+                    else
+                    {
                         List<String> childList = scanFile(realPath);
-                        if (childList.size() > 0) pathList.addAll(childList);
+                        if (childList.size() > 0)
+                        {
+                            pathList.addAll(childList);
+                        }
                     }
                 }
             }

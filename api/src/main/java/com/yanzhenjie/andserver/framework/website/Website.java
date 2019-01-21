@@ -33,36 +33,44 @@ import java.io.IOException;
 /**
  * Created by YanZhenjie on 2018/9/4.
  */
-public abstract class Website implements HandlerAdapter, ETag, LastModified {
+public abstract class Website implements HandlerAdapter, ETag, LastModified
+{
 
     @Nullable
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws IOException
+    {
         return null;
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws IOException
+    {
         return 0;
     }
 
     @Nullable
     @Override
-    public RequestHandler getHandler(@NonNull HttpRequest request) {
-        return new RequestHandler() {
+    public RequestHandler getHandler(@NonNull HttpRequest request)
+    {
+        return new RequestHandler()
+        {
             @Nullable
             @Override
-            public String getETag(@NonNull HttpRequest request) throws IOException {
+            public String getETag(@NonNull HttpRequest request) throws IOException
+            {
                 return Website.this.getETag(request);
             }
 
             @Override
-            public long getLastModified(@NonNull HttpRequest request) throws IOException {
+            public long getLastModified(@NonNull HttpRequest request) throws IOException
+            {
                 return Website.this.getLastModified(request);
             }
 
             @Override
-            public View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws IOException {
+            public View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws IOException
+            {
                 return new BodyView(getBody(request));
             }
         };

@@ -32,7 +32,8 @@ import java.io.IOException;
 /**
  * Created by YanZhenjie on 2018/9/7.
  */
-public class StorageWebsite extends BasicWebsite implements Patterns {
+public class StorageWebsite extends BasicWebsite implements Patterns
+{
 
     private final String mRootPath;
 
@@ -41,17 +42,19 @@ public class StorageWebsite extends BasicWebsite implements Patterns {
      *
      * @param rootPath website root directory.
      */
-    public StorageWebsite(@NonNull String rootPath) {
+    public StorageWebsite(@NonNull String rootPath)
+    {
         this(rootPath, DEFAULT_INDEX);
     }
 
     /**
      * Create a website object.
      *
-     * @param rootPath website root directory.
+     * @param rootPath      website root directory.
      * @param indexFileName the default file name for each directory, e.g. index.html.
      */
-    public StorageWebsite(@NonNull String rootPath, @NonNull String indexFileName) {
+    public StorageWebsite(@NonNull String rootPath, @NonNull String indexFileName)
+    {
         super(indexFileName);
         Assert.isTrue(!StringUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
         Assert.isTrue(rootPath.matches(PATH), "The format of [%s] is wrong, it should be like [/root/project].");
@@ -60,7 +63,8 @@ public class StorageWebsite extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public boolean intercept(@NonNull HttpRequest request) {
+    public boolean intercept(@NonNull HttpRequest request)
+    {
         String httpPath = request.getPath();
         File source = findPathResource(httpPath);
         return source != null;
@@ -70,23 +74,32 @@ public class StorageWebsite extends BasicWebsite implements Patterns {
      * Find the path specified resource.
      *
      * @param httpPath path.
-     *
      * @return return if the file is found.
      */
-    private File findPathResource(@NonNull String httpPath) {
-        if ("/".equals(httpPath)) {
+    private File findPathResource(@NonNull String httpPath)
+    {
+        if ("/".equals(httpPath))
+        {
             File indexFile = new File(mRootPath, getIndexFileName());
-            if (indexFile.exists() && indexFile.isFile()) {
+            if (indexFile.exists() && indexFile.isFile())
+            {
                 return indexFile;
             }
-        } else {
+        }
+        else
+        {
             File sourceFile = new File(mRootPath, httpPath);
-            if (sourceFile.exists()) {
-                if (sourceFile.isFile()) {
+            if (sourceFile.exists())
+            {
+                if (sourceFile.isFile())
+                {
                     return sourceFile;
-                } else {
+                }
+                else
+                {
                     File childIndexFile = new File(sourceFile, getIndexFileName());
-                    if (childIndexFile.exists() && childIndexFile.isFile()) {
+                    if (childIndexFile.exists() && childIndexFile.isFile())
+                    {
                         return childIndexFile;
                     }
                 }
@@ -96,10 +109,12 @@ public class StorageWebsite extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws IOException
+    {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
-        if (resource != null) {
+        if (resource != null)
+        {
             String tag = resource.getAbsolutePath() + resource.lastModified();
             return DigestUtils.md5DigestAsHex(tag);
         }
@@ -107,19 +122,25 @@ public class StorageWebsite extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws IOException
+    {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
-        if (resource != null) return resource.lastModified();
+        if (resource != null)
+        {
+            return resource.lastModified();
+        }
         return -1;
     }
 
     @NonNull
     @Override
-    public ResponseBody getBody(@NonNull HttpRequest request) throws IOException {
+    public ResponseBody getBody(@NonNull HttpRequest request) throws IOException
+    {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
-        if (resource == null) {
+        if (resource == null)
+        {
             throw new NotFoundException(httpPath);
         }
         return new FileBody(resource);

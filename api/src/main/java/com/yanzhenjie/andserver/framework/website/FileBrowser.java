@@ -39,18 +39,21 @@ import java.io.OutputStream;
 /**
  * Created by YanZhenjie on 2018/9/7.
  */
-public class FileBrowser extends BasicWebsite implements Patterns {
+public class FileBrowser extends BasicWebsite implements Patterns
+{
 
     private final String mRootPath;
 
-    public FileBrowser(String rootPath) {
+    public FileBrowser(String rootPath)
+    {
         Assert.isTrue(!StringUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
         Assert.isTrue(rootPath.matches(PATH), "The format of [%s] is wrong, it should be like [/root/project].");
         this.mRootPath = rootPath;
     }
 
     @Override
-    public boolean intercept(@NonNull HttpRequest request) {
+    public boolean intercept(@NonNull HttpRequest request)
+    {
         String httpPath = request.getPath();
         File source = findPathResource(httpPath);
         return source != null;
@@ -60,16 +63,20 @@ public class FileBrowser extends BasicWebsite implements Patterns {
      * Find the path specified resource.
      *
      * @param httpPath path.
-     *
      * @return return if the file is found.
      */
-    private File findPathResource(@NonNull String httpPath) {
-        if ("/".equals(httpPath)) {
+    private File findPathResource(@NonNull String httpPath)
+    {
+        if ("/".equals(httpPath))
+        {
             File root = new File(mRootPath);
             return root.exists() ? root : null;
-        } else {
+        }
+        else
+        {
             File sourceFile = new File(mRootPath, httpPath);
-            if (sourceFile.exists()) {
+            if (sourceFile.exists())
+            {
                 return sourceFile;
             }
         }
@@ -77,10 +84,12 @@ public class FileBrowser extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws IOException
+    {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
-        if (resource != null) {
+        if (resource != null)
+        {
             String tag = resource.getAbsolutePath() + resource.lastModified();
             return DigestUtils.md5DigestAsHex(tag);
         }
@@ -88,23 +97,30 @@ public class FileBrowser extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws IOException
+    {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
-        if (resource != null) return resource.lastModified();
+        if (resource != null)
+        {
+            return resource.lastModified();
+        }
         return -1;
     }
 
     @NonNull
     @Override
-    public ResponseBody getBody(@NonNull HttpRequest request) throws IOException {
+    public ResponseBody getBody(@NonNull HttpRequest request) throws IOException
+    {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
-        if (resource == null) {
+        if (resource == null)
+        {
             throw new NotFoundException(httpPath);
         }
 
-        if (resource.isDirectory()) {
+        if (resource.isDirectory())
+        {
             File tempFile = File.createTempFile("file_browser", ".html");
             OutputStream outputStream = new FileOutputStream(tempFile);
 
@@ -113,8 +129,10 @@ public class FileBrowser extends BasicWebsite implements Patterns {
             outputStream.write(prefix.getBytes("utf-8"));
 
             File[] children = resource.listFiles();
-            if (!ObjectUtils.isEmpty(children)) {
-                for (File file : children) {
+            if (!ObjectUtils.isEmpty(children))
+            {
+                for (File file : children)
+                {
                     String filePath = file.getAbsolutePath();
                     int rootIndex = filePath.indexOf(mRootPath);
                     String subHttpPath = filePath.substring(rootIndex + mRootPath.length());
@@ -125,31 +143,36 @@ public class FileBrowser extends BasicWebsite implements Patterns {
             }
 
             outputStream.write(FOLDER_HTML_SUFFIX.getBytes("utf-8"));
-            return new FileBody(tempFile) {
+            return new FileBody(tempFile)
+            {
                 @Nullable
                 @Override
-                public MediaType contentType() {
+                public MediaType contentType()
+                {
                     MediaType mimeType = super.contentType();
-                    if (mimeType != null) {
+                    if (mimeType != null)
+                    {
                         mimeType = new MediaType(mimeType.getType(), mimeType.getSubtype(), Charsets.UTF_8);
                     }
                     return mimeType;
                 }
             };
-        } else {
+        }
+        else
+        {
             return new FileBody(resource);
         }
     }
 
     private static final String FOLDER_HTML_PREFIX = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" " +
-        "content=\"text/html; charset=utf-8\"/> <meta name=\"viewport\" content=\"width=device-width, " +
-        "initial-scale=1, user-scalable=no\"><metaname=\"format-detection\" content=\"telephone=no\"/> " +
-        "<title>%1$s</title><style>.center_horizontal{margin:0 auto;text-align:center;} *,*::after,*::before " +
-        "{box-sizing: border-box;margin: 0;padding: 0;}a:-webkit-any-link {color: -webkit-link;cursor: auto;" +
-        "text-decoration: underline;}ul {list-style: none;display: block;list-style-type: none;-webkit-margin-before:" +
-        " 1em;-webkit-margin-after: 1em;-webkit-margin-start: 0px;-webkit-margin-end: 0px;-webkit-padding-start: " +
-        "40px;}li {display: list-item;text-align: -webkit-match-parent;margin-bottom: 5px;}</style></head><body><h1 " +
-        "class=\"center_horizontal\">%2$s</h1><ul>";
+            "content=\"text/html; charset=utf-8\"/> <meta name=\"viewport\" content=\"width=device-width, " +
+            "initial-scale=1, user-scalable=no\"><metaname=\"format-detection\" content=\"telephone=no\"/> " +
+            "<title>%1$s</title><style>.center_horizontal{margin:0 auto;text-align:center;} *,*::after,*::before " +
+            "{box-sizing: border-box;margin: 0;padding: 0;}a:-webkit-any-link {color: -webkit-link;cursor: auto;" +
+            "text-decoration: underline;}ul {list-style: none;display: block;list-style-type: none;-webkit-margin-before:" +
+            " 1em;-webkit-margin-after: 1em;-webkit-margin-start: 0px;-webkit-margin-end: 0px;-webkit-padding-start: " +
+            "40px;}li {display: list-item;text-align: -webkit-match-parent;margin-bottom: 5px;}</style></head><body><h1 " +
+            "class=\"center_horizontal\">%2$s</h1><ul>";
     private static final String FOLDER_ITEM = "<li><a href=\"%1$s\">%2$s</a></li>";
     private static final String FOLDER_HTML_SUFFIX = "</ul></body></html>";
 }

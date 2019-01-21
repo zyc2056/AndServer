@@ -53,6 +53,6 @@ public class PathManager
 
     public String getWebDir()
     {
-        return new File(mRootDir, "web").getAbsolutePath();
+        return new File(mRootDir, "Configure").getAbsolutePath();
     }
 }
