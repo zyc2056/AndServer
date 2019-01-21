@@ -1,18 +1,3 @@
-/*
- * Copyright © 2018 Yan Zhenjie.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yanzhenjie.andserver.sample;
 
 import android.content.BroadcastReceiver;
@@ -20,51 +5,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-/**
- * Created by Yan Zhenjie on 2018/6/9.
- */
 public class ServerManager extends BroadcastReceiver
 {
 
     private static final String ACTION = "com.yanzhenjie.andserver.receiver";
 
-    private static final String CMD_KEY = "CMD_KEY";
-    private static final String MESSAGE_KEY = "MESSAGE_KEY";
+    private static final String CMD_NAME = "CMD_NAME";
+    private static final String CMD_EXTRA = "CMD_EXTRA";
 
-    private static final int CMD_VALUE_START = 1;
-    private static final int CMD_VALUE_ERROR = 2;
-    private static final int CMD_VALUE_STOP = 4;
-
-    /**
-     * Notify serverStart.
-     *
-     * @param context context.
-     */
+    private static final int CMD_START = 1;
+    private static final int CMD_ERROR = 2;
+    private static final int CMD_STOP = 4;
+    
     public static void onServerStart(Context context, String hostAddress)
     {
-        sendBroadcast(context, CMD_VALUE_START, hostAddress);
+        sendBroadcast(context, CMD_START, hostAddress);
     }
 
-    /**
-     * Notify serverStop.
-     *
-     * @param context context.
-     */
+  
     public static void onServerError(Context context, String error)
     {
-        sendBroadcast(context, CMD_VALUE_ERROR, error);
+        sendBroadcast(context, CMD_ERROR, error);
     }
 
-    /**
-     * Notify serverStop.
-     *
-     * @param context context.
-     */
+   
     public static void onServerStop(Context context)
     {
-        sendBroadcast(context, CMD_VALUE_STOP);
+        sendBroadcast(context, CMD_STOP);
     }
 
+    
+    
     private static void sendBroadcast(Context context, int cmd)
     {
         sendBroadcast(context, cmd, null);
@@ -73,32 +44,31 @@ public class ServerManager extends BroadcastReceiver
     private static void sendBroadcast(Context context, int cmd, String message)
     {
         Intent broadcast = new Intent(ACTION);
-        broadcast.putExtra(CMD_KEY, cmd);
-        broadcast.putExtra(MESSAGE_KEY, message);
+        broadcast.putExtra(CMD_NAME, cmd);
+        broadcast.putExtra(CMD_EXTRA, message);
         context.sendBroadcast(broadcast);
     }
+    
+    
+    
 
     private MainActivity mActivity;
-    private Intent mService;
+    private Intent serviceIntent;
 
     public ServerManager(MainActivity activity)
     {
         this.mActivity = activity;
-        mService = new Intent(activity, CoreService.class);
+        serviceIntent = new Intent(activity, CoreService.class);
     }
 
-    /**
-     * Register broadcast.
-     */
+   
     public void register()
     {
         IntentFilter filter = new IntentFilter(ACTION);
         mActivity.registerReceiver(this, filter);
     }
 
-    /**
-     * UnRegister broadcast.
-     */
+   
     public void unRegister()
     {
         mActivity.unregisterReceiver(this);
@@ -106,12 +76,12 @@ public class ServerManager extends BroadcastReceiver
 
     public void startServer()
     {
-        mActivity.startService(mService);
+        mActivity.startService(serviceIntent);
     }
 
     public void stopServer()
     {
-        mActivity.stopService(mService);
+        mActivity.stopService(serviceIntent);
     }
 
     @Override
@@ -120,22 +90,22 @@ public class ServerManager extends BroadcastReceiver
         String action = intent.getAction();
         if (ACTION.equals(action))
         {
-            int cmd = intent.getIntExtra(CMD_KEY, 0);
+            int cmd = intent.getIntExtra(CMD_NAME, 0);
             switch (cmd)
             {
-                case CMD_VALUE_START:
+                case CMD_START:
                 {
-                    String ip = intent.getStringExtra(MESSAGE_KEY);
+                    String ip = intent.getStringExtra(CMD_EXTRA);
                     mActivity.onServerStart(ip);
                     break;
                 }
-                case CMD_VALUE_ERROR:
+                case CMD_ERROR:
                 {
-                    String error = intent.getStringExtra(MESSAGE_KEY);
+                    String error = intent.getStringExtra(CMD_EXTRA);
                     mActivity.onServerError(error);
                     break;
                 }
-                case CMD_VALUE_STOP:
+                case CMD_STOP:
                 {
                     mActivity.onServerStop();
                     break;
