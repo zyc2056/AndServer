@@ -24,7 +24,6 @@ import com.yanzhenjie.andserver.annotation.GetMapping;
 @Controller
 public class PageController
 {
-
     @GetMapping(path = "/")
     public String index()
     {

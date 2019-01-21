@@ -15,21 +15,31 @@
  */
 package com.yanzhenjie.andserver.sample.component;
 
-import com.yanzhenjie.andserver.annotation.Website;
-import com.yanzhenjie.andserver.framework.website.StorageWebsite;
-import com.yanzhenjie.andserver.sample.util.PathManager;
 
-
+/*
 @Website
-public class MyWebsite extends StorageWebsite
+public class MyWebsite extends FileBrowser
 {
     public MyWebsite()
     {
         super(PathManager.getInstance().getWebDir());
     }
 }
+*/
 
-/*
+/*@Website
+public class MyWebsite extends StorageWebsite
+{
+    public MyWebsite()
+    {
+        super(PathManager.getInstance().getWebDir());
+    }
+}*/
+
+
+import com.yanzhenjie.andserver.annotation.Website;
+import com.yanzhenjie.andserver.framework.website.AssetsWebsite;
+
 @Website
 public class MyWebsite extends AssetsWebsite
 {
@@ -37,4 +47,4 @@ public class MyWebsite extends AssetsWebsite
     {
         super("/web");
     }
-}*/
+}
