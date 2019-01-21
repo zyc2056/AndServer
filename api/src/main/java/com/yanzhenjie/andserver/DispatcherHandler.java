@@ -59,7 +59,8 @@ import java.util.List;
 /**
  * Created by YanZhenjie on 2018/8/8.
  */
-public class DispatcherHandler implements HttpRequestHandler, Register {
+public class DispatcherHandler implements HttpRequestHandler, Register
+{
 
     private SessionManager mSessionManager;
     private MultipartResolver mMultipartResolver;
@@ -70,7 +71,8 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     private List<HandlerAdapter> mAdapterList = new LinkedList<>();
     private List<HandlerInterceptor> mInterceptorList = new LinkedList<>();
 
-    public DispatcherHandler(Context context) {
+    public DispatcherHandler(Context context)
+    {
         this.mSessionManager = new StandardSessionManager(context);
         this.mMultipartResolver = new StandardMultipartResolver(context);
         this.mViewResolver = new ViewResolver();
@@ -80,31 +82,37 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     }
 
     @Override
-    public void addAdapter(@NonNull HandlerAdapter adapter) {
+    public void addAdapter(@NonNull HandlerAdapter adapter)
+    {
         Assert.notNull(adapter, "The adapter cannot be null.");
 
-        if (!mAdapterList.contains(adapter)) {
+        if (!mAdapterList.contains(adapter))
+        {
             mAdapterList.add(adapter);
         }
     }
 
     @Override
-    public void addInterceptor(@NonNull HandlerInterceptor interceptor) {
+    public void addInterceptor(@NonNull HandlerInterceptor interceptor)
+    {
         Assert.notNull(interceptor, "The interceptor cannot be null.");
 
-        if (!mInterceptorList.contains(interceptor)) {
+        if (!mInterceptorList.contains(interceptor))
+        {
             mInterceptorList.add(interceptor);
         }
     }
 
     @Override
-    public void setConverter(MessageConverter converter) {
+    public void setConverter(MessageConverter converter)
+    {
         this.mConverter = converter;
         this.mViewResolver = new ViewResolver(converter);
     }
 
     @Override
-    public void setResolver(@NonNull ExceptionResolver resolver) {
+    public void setResolver(@NonNull ExceptionResolver resolver)
+    {
         Assert.notNull(resolver, "The exceptionResolver cannot be null.");
 
         this.mResolver = resolver;
@@ -112,46 +120,67 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
 
     @Override
     public void handle(org.apache.httpcore.HttpRequest req, org.apache.httpcore.HttpResponse res,
-        org.apache.httpcore.protocol.HttpContext con) {
+                       org.apache.httpcore.protocol.HttpContext con)
+    {
         HttpRequest request = new StandardRequest(req, new StandardContext(con), this, mSessionManager);
         HttpResponse response = new StandardResponse(res);
         handle(request, response);
     }
 
-    private void handle(HttpRequest request, HttpResponse response) {
-        try {
-            if (mMultipartResolver.isMultipart(request)) {
+    private void handle(HttpRequest request, HttpResponse response)
+    {
+        try
+        {
+            if (mMultipartResolver.isMultipart(request))
+            {
                 request = mMultipartResolver.resolveMultipart(request);
             }
 
             // Determine adapter for the current request.
             HandlerAdapter ha = getHandlerAdapter(request);
-            if (ha == null) throw new NotFoundException(request.getPath());
+            if (ha == null)
+            {
+                throw new NotFoundException(request.getPath());
+            }
 
             // Determine handler for the current request.
             RequestHandler handler = ha.getHandler(request);
-            if (handler == null) throw new NotFoundException(request.getPath());
+            if (handler == null)
+            {
+                throw new NotFoundException(request.getPath());
+            }
 
             // Pre processor, e.g. interceptor.
-            if (preHandle(request, response, handler)) return;
+            if (preHandle(request, response, handler))
+            {
+                return;
+            }
 
             // Actually invoke the handler.
             request.setAttribute(HttpContext.HTTP_MESSAGE_CONVERTER, mConverter);
             View view = handler.handle(request, response);
             mViewResolver.resolve(view, request, response);
             processSession(request, response);
-        } catch (Throwable err) {
-            try {
+        }
+        catch (Throwable err)
+        {
+            try
+            {
                 mResolver.onResolve(request, response, err);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e = new ServerInternalException(e);
                 response.setStatus(StatusCode.SC_INTERNAL_SERVER_ERROR);
                 response.setBody(new StringBody(e.getMessage()));
             }
             processSession(request, response);
-        } finally {
-            if (request instanceof MultipartRequest) {
-                mMultipartResolver.cleanupMultipart((MultipartRequest)request);
+        }
+        finally
+        {
+            if (request instanceof MultipartRequest)
+            {
+                mMultipartResolver.cleanupMultipart((MultipartRequest) request);
             }
         }
     }
@@ -160,12 +189,16 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
      * Return the {@link RequestHandler} for this request.
      *
      * @param request current HTTP request.
-     *
      * @return the {@link RequestHandler}, or {@code null} if no handler could be found.
      */
-    private HandlerAdapter getHandlerAdapter(HttpRequest request) {
-        for (HandlerAdapter ha : mAdapterList) {
-            if (ha.intercept(request)) return ha;
+    private HandlerAdapter getHandlerAdapter(HttpRequest request)
+    {
+        for (HandlerAdapter ha : mAdapterList)
+        {
+            if (ha.intercept(request))
+            {
+                return ha;
+            }
         }
         return null;
     }
@@ -173,50 +206,64 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     /**
      * Intercept the execution of a handler.
      *
-     * @param request current request.
+     * @param request  current request.
      * @param response current response.
-     * @param handler the corresponding handler of the current request.
-     *
+     * @param handler  the corresponding handler of the current request.
      * @return true if the interceptor has processed the request and responded.
      */
-    private boolean preHandle(HttpRequest request, HttpResponse response, RequestHandler handler) throws Exception {
-        for (HandlerInterceptor interceptor : mInterceptorList) {
-            if (interceptor.onIntercept(request, response, handler)) return true;
+    private boolean preHandle(HttpRequest request, HttpResponse response, RequestHandler handler) throws Exception
+    {
+        for (HandlerInterceptor interceptor : mInterceptorList)
+        {
+            if (interceptor.onIntercept(request, response, handler))
+            {
+                return true;
+            }
         }
         return false;
     }
 
     @Nullable
-    public RequestDispatcher getRequestDispatcher(final HttpRequest request, final String path) {
+    public RequestDispatcher getRequestDispatcher(final HttpRequest request, final String path)
+    {
         HttpRequest copyRequest = request;
-        while (copyRequest instanceof RequestWrapper) {
-            RequestWrapper wrapper = (RequestWrapper)request;
+        while (copyRequest instanceof RequestWrapper)
+        {
+            RequestWrapper wrapper = (RequestWrapper) request;
             copyRequest = wrapper.getRequest();
         }
 
-        StandardRequest newRequest = (StandardRequest)copyRequest;
+        StandardRequest newRequest = (StandardRequest) copyRequest;
         newRequest.setPath(path);
 
         HandlerAdapter ha = getHandlerAdapter(copyRequest);
-        if (ha == null) {
+        if (ha == null)
+        {
             throw new NotFoundException(request.getPath());
         }
 
-        return new RequestDispatcher() {
+        return new RequestDispatcher()
+        {
             @Override
-            public void forward(@NonNull HttpRequest request, @NonNull HttpResponse response) {
+            public void forward(@NonNull HttpRequest request, @NonNull HttpResponse response)
+            {
                 handle(request, response);
             }
         };
     }
 
-    private void processSession(HttpRequest request, HttpResponse response) {
+    private void processSession(HttpRequest request, HttpResponse response)
+    {
         Object objSession = request.getAttribute(HttpContext.REQUEST_CREATED_SESSION);
-        if (objSession != null && objSession instanceof Session) {
-            Session session = (Session)objSession;
-            try {
+        if (objSession != null && objSession instanceof Session)
+        {
+            Session session = (Session) objSession;
+            try
+            {
                 mSessionManager.add(session);
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 Log.e(AndServer.TAG, "Session persistence failed.", e);
             }
 

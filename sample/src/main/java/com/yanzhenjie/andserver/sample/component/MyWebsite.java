@@ -16,16 +16,25 @@
 package com.yanzhenjie.andserver.sample.component;
 
 import com.yanzhenjie.andserver.annotation.Website;
-import com.yanzhenjie.andserver.framework.website.AssetsWebsite;
+import com.yanzhenjie.andserver.framework.website.StorageWebsite;
+import com.yanzhenjie.andserver.sample.util.PathManager;
 
-/**
- * Created by YanZhenjie on 2018/9/17.
- */
+
 @Website
-public class InternalWebsite extends AssetsWebsite
+public class MyWebsite extends StorageWebsite
 {
-    public InternalWebsite()
+    public MyWebsite()
+    {
+        super(PathManager.getInstance().getWebDir());
+    }
+}
+
+/*
+@Website
+public class MyWebsite extends AssetsWebsite
+{
+    public MyWebsite()
     {
         super("/web");
     }
-}
+}*/

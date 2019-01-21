@@ -25,7 +25,8 @@ import com.yanzhenjie.andserver.util.Assert;
 /**
  * Created by YanZhenjie on 2018/6/9.
  */
-public class AndServer {
+public class AndServer
+{
 
     public static final String TAG = "AndServer";
 
@@ -33,12 +34,16 @@ public class AndServer {
     private static Context sContext;
     private static boolean sDebug;
 
-    public static void initialize(@NonNull Context context) {
+    public static void initialize(@NonNull Context context)
+    {
         Assert.notNull(context, "The context must not be null.");
 
-        if (sContext == null) {
-            synchronized (AndServer.class) {
-                if (sContext == null) {
+        if (sContext == null)
+        {
+            synchronized (AndServer.class)
+            {
+                if (sContext == null)
+                {
                     sContext = context.getApplicationContext();
                     ApplicationInfo appInfo = context.getApplicationInfo();
                     sDebug = (appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
@@ -53,7 +58,8 @@ public class AndServer {
      * @return {@link Context}.
      */
     @NonNull
-    public static Context getContext() {
+    public static Context getContext()
+    {
         return sContext;
     }
 
@@ -62,7 +68,8 @@ public class AndServer {
      *
      * @return true, otherwise is false.
      */
-    public static boolean isDebug() {
+    public static boolean isDebug()
+    {
         return sDebug;
     }
 
@@ -71,7 +78,8 @@ public class AndServer {
      *
      * @return {@link Server.Builder}.
      */
-    public static Server.Builder serverBuilder() {
+    public static Server.Builder serverBuilder()
+    {
         return Server.newBuilder();
     }
 }

@@ -37,10 +37,11 @@ import dalvik.system.DexFile;
 
 /**
  * <p> Load all the components in the dex file. </p>
- *
+ * <p>
  * Created by YanZhenjie on 2018/9/23.
  */
-public class ComponentRegister {
+public class ComponentRegister
+{
 
     private static final String COMPONENT_PACKAGE_NAME = "com.yanzhenjie.andserver.register";
     private static final String COMPONENT_INTERFACE_NAME = OnRegister.class.getName();
@@ -54,54 +55,78 @@ public class ComponentRegister {
 
     private Context mContext;
 
-    public ComponentRegister(Context context) {
+    public ComponentRegister(Context context)
+    {
         this.mContext = context;
     }
 
-    public void register(Register register) {
+    public void register(Register register)
+    {
         List<String> paths = getDexFilePaths(mContext);
 
-        for (final String path : paths) {
+        for (final String path : paths)
+        {
             DexFile dexfile = null;
 
-            try {
-                if (path.endsWith(EXTRACTED_SUFFIX)) {
+            try
+            {
+                if (path.endsWith(EXTRACTED_SUFFIX))
+                {
                     dexfile = DexFile.loadDex(path, path + ".tmp", 0);
-                } else {
+                }
+                else
+                {
                     dexfile = new DexFile(path);
                 }
 
                 Enumeration<String> dexEntries = dexfile.entries();
-                while (dexEntries.hasMoreElements()) {
+                while (dexEntries.hasMoreElements())
+                {
                     String className = dexEntries.nextElement();
-                    if (className.startsWith(COMPONENT_PACKAGE_NAME)) {
+                    if (className.startsWith(COMPONENT_PACKAGE_NAME))
+                    {
                         registerClass(register, className);
                     }
                 }
-            } catch (Throwable e) {
+            }
+            catch (Throwable e)
+            {
                 Log.w(AndServer.TAG, "An exception occurred while registering components.", e);
-            } finally {
-                if (dexfile != null) {
-                    try {
+            }
+            finally
+            {
+                if (dexfile != null)
+                {
+                    try
+                    {
                         dexfile.close();
-                    } catch (Throwable ignore) {
+                    }
+                    catch (Throwable ignore)
+                    {
                     }
                 }
             }
         }
     }
 
-    private void registerClass(Register register, String className) throws Exception {
+    private void registerClass(Register register, String className) throws Exception
+    {
         Class clazz = Class.forName(className);
-        if (clazz.isInterface()) return;
+        if (clazz.isInterface())
+        {
+            return;
+        }
 
         Class<?>[] interfaces = clazz.getInterfaces();
-        for (Class<?> anInterface : interfaces) {
-            if (COMPONENT_INTERFACE_NAME.equals(anInterface.getName())) {
+        for (Class<?> anInterface : interfaces)
+        {
+            if (COMPONENT_INTERFACE_NAME.equals(anInterface.getName()))
+            {
                 Object obj = clazz.newInstance();
-                if (obj instanceof OnRegister) {
+                if (obj instanceof OnRegister)
+                {
                     Log.i(AndServer.TAG, String.format("Loading %s.", className));
-                    OnRegister onRegister = (OnRegister)obj;
+                    OnRegister onRegister = (OnRegister) obj;
                     onRegister.onRegister(register);
                 }
                 break;
@@ -109,9 +134,10 @@ public class ComponentRegister {
         }
     }
 
-    private static SharedPreferences getMultiDexPreferences(Context context) {
+    private static SharedPreferences getMultiDexPreferences(Context context)
+    {
         return context.getSharedPreferences(PREFS_FILE,
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? Context.MODE_PRIVATE : Context.MODE_MULTI_PROCESS);
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? Context.MODE_PRIVATE : Context.MODE_MULTI_PROCESS);
     }
 
     /**
@@ -120,28 +146,33 @@ public class ComponentRegister {
      * @see com.android.support.MultiDex#loadExistingExtractions(Context, String)
      * @see com.android.support.MultiDex#clearOldDexDir(Context)
      */
-    public static List<String> getDexFilePaths(Context context) {
+    public static List<String> getDexFilePaths(Context context)
+    {
         ApplicationInfo appInfo = context.getApplicationInfo();
         File sourceApk = new File(appInfo.sourceDir);
 
         List<String> sourcePaths = new ArrayList<>();
         sourcePaths.add(appInfo.sourceDir);
 
-        if (!isVMMultidexCapable()) {
+        if (!isVMMultidexCapable())
+        {
             String extractedFilePrefix = sourceApk.getName() + EXTRACTED_NAME_EXT;
             int totalDexNumber = getMultiDexPreferences(context).getInt(KEY_DEX_NUMBER, 1);
             File dexDir = new File(appInfo.dataDir, CODE_CACHE_SECONDARY_DIRECTORY);
 
-            for (int secondaryNumber = 2; secondaryNumber <= totalDexNumber; secondaryNumber++) {
+            for (int secondaryNumber = 2; secondaryNumber <= totalDexNumber; secondaryNumber++)
+            {
                 String fileName = extractedFilePrefix + secondaryNumber + EXTRACTED_SUFFIX;
                 File extractedFile = new File(dexDir, fileName);
-                if (extractedFile.isFile()) {
+                if (extractedFile.isFile())
+                {
                     sourcePaths.add(extractedFile.getAbsolutePath());
                 }
             }
         }
 
-        if (AndServer.isDebug()) {
+        if (AndServer.isDebug())
+        {
             sourcePaths.addAll(loadInstantRunDexFile(appInfo));
         }
         return sourcePaths;
@@ -151,20 +182,24 @@ public class ComponentRegister {
      * Identifies if the current VM has a native support for multidex.
      *
      * @return true, otherwise is false.
-     *
      * @see android.support.multidex.MultiDexExtractor#isVMMultidexCapable(String)
      */
-    private static boolean isVMMultidexCapable() {
+    private static boolean isVMMultidexCapable()
+    {
         boolean isMultidexCapable = false;
         String vmVersion = System.getProperty("java.vm.version");
-        try {
+        try
+        {
             Matcher matcher = Pattern.compile("(\\d+)\\.(\\d+)(\\.\\d+)?").matcher(vmVersion);
-            if (matcher.matches()) {
+            if (matcher.matches())
+            {
                 int major = Integer.parseInt(matcher.group(1));
                 int minor = Integer.parseInt(matcher.group(2));
                 isMultidexCapable = (major > 2) || ((major == 2) && (minor >= 1));
             }
-        } catch (Exception ignore) {
+        }
+        catch (Exception ignore)
+        {
         }
         String multidex = isMultidexCapable ? "has Multidex support" : "does not have Multidex support";
         Log.i(AndServer.TAG, String.format("VM with version %s %s.", vmVersion, multidex));
@@ -174,33 +209,45 @@ public class ComponentRegister {
     /**
      * Get instant run dex path, used to catch the branch usingApkSplits=false.
      */
-    private static List<String> loadInstantRunDexFile(ApplicationInfo appInfo) {
+    private static List<String> loadInstantRunDexFile(ApplicationInfo appInfo)
+    {
         List<String> instantRunDexPaths = new ArrayList<>();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && appInfo.splitSourceDirs != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && appInfo.splitSourceDirs != null)
+        {
             instantRunDexPaths.addAll(Arrays.asList(appInfo.splitSourceDirs));
             Log.i(AndServer.TAG, "InstantRun support was found.");
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 // Reflect instant run sdk to find where is the dex file.
                 Class pathsByInstantRun = Class.forName("com.android.tools.fd.runtime.Paths");
                 Method getDexFileDirectory = pathsByInstantRun.getMethod("getDexFileDirectory", String.class);
-                String dexDirectory = (String)getDexFileDirectory.invoke(null, appInfo.packageName);
+                String dexDirectory = (String) getDexFileDirectory.invoke(null, appInfo.packageName);
 
                 File dexFolder = new File(dexDirectory);
-                if (dexFolder.exists() && dexFolder.isDirectory()) {
+                if (dexFolder.exists() && dexFolder.isDirectory())
+                {
                     File[] dexFiles = dexFolder.listFiles();
-                    for (File file : dexFiles) {
-                        if (file.exists() && file.isFile() && file.getName().endsWith(".dex")) {
+                    for (File file : dexFiles)
+                    {
+                        if (file.exists() && file.isFile() && file.getName().endsWith(".dex"))
+                        {
                             instantRunDexPaths.add(file.getAbsolutePath());
                         }
                     }
                     Log.i(AndServer.TAG, "InstantRun support was found.");
                 }
 
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e)
+            {
                 Log.i(AndServer.TAG, "InstantRun support was not found.");
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Log.w(AndServer.TAG, "Finding InstantRun failed.", e);
             }
         }

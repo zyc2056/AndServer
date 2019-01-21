@@ -37,9 +37,11 @@ import javax.net.ssl.SSLServerSocket;
 /**
  * Created by YanZhenjie on 2018/9/10.
  */
-public class Server {
+public class Server
+{
 
-    public static Builder newBuilder() {
+    public static Builder newBuilder()
+    {
         return new Builder();
     }
 
@@ -53,7 +55,8 @@ public class Server {
     private HttpServer mHttpServer;
     private boolean isRunning;
 
-    private Server(Builder builder) {
+    private Server(Builder builder)
+    {
         this.mInetAddress = builder.mInetAddress;
         this.mPort = builder.mPort;
         this.mTimeout = builder.mTimeout;
@@ -67,61 +70,83 @@ public class Server {
      *
      * @return return true, not return false.
      */
-    public boolean isRunning() {
+    public boolean isRunning()
+    {
         return isRunning;
     }
 
     /**
      * Start the server.
      */
-    public void startup() {
-        if (isRunning) return;
+    public void startup()
+    {
+        if (isRunning)
+        {
+            return;
+        }
 
-        Executors.getInstance().submit(new Runnable() {
+        Executors.getInstance().submit(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 DispatcherHandler handler = new DispatcherHandler(AndServer.getContext());
                 ComponentRegister register = new ComponentRegister(AndServer.getContext());
                 register.register(handler);
 
                 mHttpServer = ServerBootstrap.bootstrap()
-                    .setSocketConfig(SocketConfig.custom()
-                        .setSoKeepAlive(true)
-                        .setSoReuseAddress(true)
-                        .setSoTimeout(mTimeout)
-                        .setTcpNoDelay(true)
-                        .build())
-                    .setConnectionConfig(
-                        ConnectionConfig.custom().setBufferSize(4 * 1024).setCharset(Charsets.UTF_8).build())
-                    .setLocalAddress(mInetAddress)
-                    .setListenerPort(mPort)
-                    .setSslContext(mSSLContext)
-                    .setSslSetupHandler(new SSLInitializerWrapper(mSSLInitializer))
-                    .setServerInfo("AndServer/2.0.0")
-                    .registerHandler("*", handler)
-                    .setExceptionLogger(ExceptionLogger.NO_OP)
-                    .create();
-                try {
+                        .setSocketConfig(SocketConfig.custom()
+                                .setSoKeepAlive(true)
+                                .setSoReuseAddress(true)
+                                .setSoTimeout(mTimeout)
+                                .setTcpNoDelay(true)
+                                .build())
+                        .setConnectionConfig(
+                                ConnectionConfig.custom().setBufferSize(4 * 1024).setCharset(Charsets.UTF_8).build())
+                        .setLocalAddress(mInetAddress)
+                        .setListenerPort(mPort)
+                        .setSslContext(mSSLContext)
+                        .setSslSetupHandler(new SSLInitializerWrapper(mSSLInitializer))
+                        .setServerInfo("AndServer/2.0.0")
+                        .registerHandler("*", handler)
+                        .setExceptionLogger(ExceptionLogger.NO_OP)
+                        .create();
+                try
+                {
                     isRunning = true;
                     mHttpServer.start();
 
-                    Executors.getInstance().post(new Runnable() {
+                    Executors.getInstance().post(new Runnable()
+                    {
                         @Override
-                        public void run() {
-                            if (mListener != null) mListener.onStarted();
+                        public void run()
+                        {
+                            if (mListener != null)
+                            {
+                                mListener.onStarted();
+                            }
                         }
                     });
-                    Runtime.getRuntime().addShutdownHook(new Thread() {
+                    Runtime.getRuntime().addShutdownHook(new Thread()
+                    {
                         @Override
-                        public void run() {
+                        public void run()
+                        {
                             mHttpServer.shutdown(3, TimeUnit.SECONDS);
                         }
                     });
-                } catch (final Exception e) {
-                    Executors.getInstance().post(new Runnable() {
+                }
+                catch (final Exception e)
+                {
+                    Executors.getInstance().post(new Runnable()
+                    {
                         @Override
-                        public void run() {
-                            if (mListener != null) mListener.onException(e);
+                        public void run()
+                        {
+                            if (mListener != null)
+                            {
+                                mListener.onException(e);
+                            }
                         }
                     });
                 }
@@ -132,32 +157,49 @@ public class Server {
     /**
      * Quit the server.
      */
-    public void shutdown() {
-        if (!isRunning) return;
+    public void shutdown()
+    {
+        if (!isRunning)
+        {
+            return;
+        }
 
-        Executors.getInstance().execute(new Runnable() {
+        Executors.getInstance().execute(new Runnable()
+        {
             @Override
-            public void run() {
-                if (mHttpServer != null) mHttpServer.shutdown(3, TimeUnit.MINUTES);
-                Executors.getInstance().post(new Runnable() {
+            public void run()
+            {
+                if (mHttpServer != null)
+                {
+                    mHttpServer.shutdown(3, TimeUnit.MINUTES);
+                }
+                Executors.getInstance().post(new Runnable()
+                {
                     @Override
-                    public void run() {
-                        if (mListener != null) mListener.onStopped();
+                    public void run()
+                    {
+                        if (mListener != null)
+                        {
+                            mListener.onStopped();
+                        }
                     }
                 });
             }
         });
     }
 
-    private final class SSLInitializerWrapper implements SSLServerSetupHandler {
+    private final class SSLInitializerWrapper implements SSLServerSetupHandler
+    {
 
         private final SSLInitializer mSSLSocketInitializer;
 
-        public SSLInitializerWrapper(@NonNull SSLInitializer initializer) {
+        public SSLInitializerWrapper(@NonNull SSLInitializer initializer)
+        {
             this.mSSLSocketInitializer = initializer;
         }
 
-        public void initialize(SSLServerSocket socket) throws SSLException {
+        public void initialize(SSLServerSocket socket) throws SSLException
+        {
             mSSLSocketInitializer.onCreated(socket);
         }
     }
@@ -167,12 +209,17 @@ public class Server {
      *
      * @throws IllegalStateException if the server is not started, an IllegalStateException is thrown.
      */
-    public InetAddress getInetAddress() {
-        if (isRunning) return mHttpServer.getInetAddress();
+    public InetAddress getInetAddress()
+    {
+        if (isRunning)
+        {
+            return mHttpServer.getInetAddress();
+        }
         throw new IllegalStateException("The server has not been started yet.");
     }
 
-    public static class Builder {
+    public static class Builder
+    {
 
         private InetAddress mInetAddress;
         private int mPort;
@@ -181,13 +228,15 @@ public class Server {
         private SSLInitializer mSSLInitializer;
         private ServerListener mListener;
 
-        private Builder() {
+        private Builder()
+        {
         }
 
         /**
          * Specified server need to monitor the ip address.
          */
-        public Builder inetAddress(InetAddress inetAddress) {
+        public Builder inetAddress(InetAddress inetAddress)
+        {
             this.mInetAddress = inetAddress;
             return this;
         }
@@ -195,7 +244,8 @@ public class Server {
         /**
          * Specify the port on which the server listens.
          */
-        public Builder port(int port) {
+        public Builder port(int port)
+        {
             this.mPort = port;
             return this;
         }
@@ -203,16 +253,18 @@ public class Server {
         /**
          * Connection and response timeout.
          */
-        public Builder timeout(int timeout, TimeUnit timeUnit) {
+        public Builder timeout(int timeout, TimeUnit timeUnit)
+        {
             long timeoutMs = timeUnit.toMillis(timeout);
-            this.mTimeout = (int)Math.min(timeoutMs, Integer.MAX_VALUE);
+            this.mTimeout = (int) Math.min(timeoutMs, Integer.MAX_VALUE);
             return this;
         }
 
         /**
          * Setting up the server is based on the SSL protocol.
          */
-        public Builder sslContext(SSLContext sslContext) {
+        public Builder sslContext(SSLContext sslContext)
+        {
             this.mSSLContext = sslContext;
             return this;
         }
@@ -220,7 +272,8 @@ public class Server {
         /**
          * Set SSLServerSocket's initializer.
          */
-        public Builder sslSocketInitializer(SSLInitializer initializer) {
+        public Builder sslSocketInitializer(SSLInitializer initializer)
+        {
             this.mSSLInitializer = initializer;
             return this;
         }
@@ -228,7 +281,8 @@ public class Server {
         /**
          * Set the server listener.
          */
-        public Builder listener(ServerListener listener) {
+        public Builder listener(ServerListener listener)
+        {
             this.mListener = listener;
             return this;
         }
@@ -236,12 +290,14 @@ public class Server {
         /**
          * Create a server.
          */
-        public Server build() {
+        public Server build()
+        {
             return new Server(this);
         }
     }
 
-    public interface ServerListener {
+    public interface ServerListener
+    {
 
         /**
          * When the server is started.
