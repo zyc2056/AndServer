@@ -42,7 +42,7 @@ public class PathManager
         {
             mRootDir = App.getInstance().getFilesDir();
         }
-        mRootDir = new File(mRootDir, "AndServer");
+        //mRootDir = new File(mRootDir, "AndServer");
         IOUtils.createFolder(mRootDir);
     }
 
@@ -53,6 +53,6 @@ public class PathManager
 
     public String getWebDir()
     {
-        return new File(mRootDir, "Configure").getAbsolutePath();
+        return new File(mRootDir, "AndServer").getAbsolutePath();
     }
 }

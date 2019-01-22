@@ -17,9 +17,6 @@ package com.yanzhenjie.andserver.sample.controller;
 
 import com.yanzhenjie.andserver.annotation.Controller;
 
-/**
- * Created by YanZhenjie on 2018/9/12.
- */
 @Controller
 public class PageController
 {

@@ -24,6 +24,6 @@ public class FileWebsite extends FileBrowser
 {
     public FileWebsite()
     {
-        super(PathManager.getInstance().getWebDir());
+        super(PathManager.getInstance().getRootDir());
     }
 }

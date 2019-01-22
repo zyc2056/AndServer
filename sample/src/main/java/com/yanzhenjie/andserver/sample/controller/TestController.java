@@ -45,7 +45,6 @@ import java.util.List;
 @RequestMapping(path = "/user")
 class TestController
 {
-
     @GetMapping(path = "/get/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     String info(@PathVariable(name = "userId") String userId)
     {
